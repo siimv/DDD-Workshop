@@ -2,7 +2,5 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/AdvancedCQRS.DocumentMessaging/AdvancedCQRS.DocumentMessaging/bin/
-/AdvancedCQRS.DocumentMessaging/AdvancedCQRS.DocumentMessaging/obj/
-/AdvancedCQRS.DocumentMessaging/.vs/
-/AdvancedCQRS.DocumentMessaging/packages/
+*.suo
+*.user
