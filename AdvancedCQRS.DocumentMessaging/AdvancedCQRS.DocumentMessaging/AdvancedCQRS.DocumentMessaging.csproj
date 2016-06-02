@@ -66,6 +66,7 @@
     <Compile Include="QueuedHandler.cs" />
     <Compile Include="RoundRobinDispatcher.cs" />
     <Compile Include="Tests\WaitersOrderTests.cs" />
+    <Compile Include="TopicBasedPubSub.cs" />
     <Compile Include="WaitersOrder.cs" />
   </ItemGroup>
   <ItemGroup>

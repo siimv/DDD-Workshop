@@ -4,11 +4,11 @@ namespace AdvancedCQRS.DocumentMessaging
 {
     public class Cashier : IHandleOrder
     {
-        private readonly IHandleOrder _orderHandler;
+        private readonly IPublisher _publisher;
 
-        public Cashier(IHandleOrder orderHandler)
+        public Cashier(IPublisher publisher)
         {
-            _orderHandler = orderHandler;
+            _publisher = publisher;
         }
 
         public void Handle(JObject baseOrder)
@@ -16,7 +16,7 @@ namespace AdvancedCQRS.DocumentMessaging
             var order = new CashiersOrder(baseOrder);
             order.IsPaid = true;
 
-            _orderHandler.Handle(order.InnerItem);
+            _publisher.Publish("OrderPaid", order.InnerItem);
         }
     }
 

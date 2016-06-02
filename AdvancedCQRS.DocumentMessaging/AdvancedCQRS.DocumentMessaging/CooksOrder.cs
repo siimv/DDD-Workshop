@@ -9,13 +9,13 @@ namespace AdvancedCQRS.DocumentMessaging
     public class Cook : IHandleOrder
     {
         private readonly string _name;
-        private readonly IHandleOrder _orderHandler;
+        private readonly IPublisher _publisher;
         private readonly int _cookingTime;
 
-        public Cook(string name, IHandleOrder orderHandler, int cookingTime)
+        public Cook(string name, IPublisher publisher, int cookingTime)
         {
             _name = name;
-            _orderHandler = orderHandler;
+            _publisher = publisher;
             _cookingTime = cookingTime;
         }
 
@@ -37,7 +37,7 @@ namespace AdvancedCQRS.DocumentMessaging
             order.CookedAt = DateTime.Now;
             order.CookedBy = _name;
 
-            _orderHandler.Handle(order.InnerItem);
+            _publisher.Publish("OrderCooked", order.InnerItem);
         }
 
         private string FindIngredients(LineItem item)

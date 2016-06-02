@@ -11,19 +11,27 @@ namespace AdvancedCQRS.DocumentMessaging
 
         public static void Main()
         {
+            var pubsub = new TopicBasedPubSub();
+
+            var waiter = new Waiter(pubsub);
+
+            var cook1 = new QueuedHandler("Cook #1", new Cook("Tom", pubsub, Random.Next(0, 1000)));
+            var cook2 = new QueuedHandler("Cook #2", new Cook("Jones", pubsub, Random.Next(0, 1000)));
+            var cook3 = new QueuedHandler("Cook #3", new Cook("Huck", pubsub, Random.Next(0, 1000)));
+            var kitchen = new QueuedHandler("Cooks line", new MoreFareDispatcher(cook1, cook2, cook3));
+            pubsub.Subscribe("OrderPlaced", kitchen);
+
+            var manager = new QueuedHandler("Manager #1", new Manager(pubsub));
+            pubsub.Subscribe("OrderCooked", manager);
+
+            var cashier = new QueuedHandler("Cashier #1", new Cashier(pubsub));
+            pubsub.Subscribe("TotalCalculated", cashier);
+
             //var handler = new PrintingOrderHandler();
             var handler = new NullHandler();
+            pubsub.Subscribe("OrderPaid", handler);
 
-            var cashier = new QueuedHandler("Cashier #1", new Cashier(handler));
-            var manager = new QueuedHandler("Manager #1", new Manager(cashier));
-            var cook1 = new QueuedHandler("Cook #1", new Cook("Tom", manager, Random.Next(0, 1000)));
-            var cook2 = new QueuedHandler("Cook #2", new Cook("Jones", manager, Random.Next(0, 1000)));
-            var cook3 = new QueuedHandler("Cook #3", new Cook("Huck", manager, Random.Next(0, 1000)));
-            //var cooks = new RoundRobinDispatcher(cook1, cook2, cook3);
-            var cooks = new QueuedHandler("Cooks line", new MoreFareDispatcher(cook1, cook2, cook3));
-            var waiter = new Waiter(cooks);
-
-            var startables = new []{ cooks, cook1, cook2, cook3, cashier, manager };
+            var startables = new []{ kitchen, cook1, cook2, cook3, cashier, manager };
 
             foreach (var startable in startables)
             {

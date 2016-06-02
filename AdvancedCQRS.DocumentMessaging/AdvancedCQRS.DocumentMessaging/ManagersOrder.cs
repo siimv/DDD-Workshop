@@ -1,17 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Newtonsoft.Json.Linq;
 
 namespace AdvancedCQRS.DocumentMessaging
 {
     public class Manager : IHandleOrder
     {
-        private readonly IHandleOrder _orderHandler;
+        private readonly IPublisher _publisher;
 
-        public Manager(IHandleOrder orderHandler)
+        public Manager(IPublisher publisher)
         {
-            _orderHandler = orderHandler;
+            _publisher = publisher;
         }
 
         public void Handle(JObject baseOrder)
@@ -24,7 +23,7 @@ namespace AdvancedCQRS.DocumentMessaging
             order.Tax = tax;
             order.Total = totalWithoutTax + tax;
 
-            _orderHandler.Handle(order.InnerItem);
+            _publisher.Publish("TotalCalculated", order.InnerItem);
         }
     }
 

@@ -6,11 +6,11 @@ namespace AdvancedCQRS.DocumentMessaging
 {
     public class Waiter
     {
-        private readonly IHandleOrder _orderHandler;
+        private readonly IPublisher _publisher;
 
-        public Waiter(IHandleOrder orderHandler)
+        public Waiter(IPublisher publisher)
         {
-            _orderHandler = orderHandler;
+            _publisher = publisher;
         }
 
         public Guid TakeOrder(int tableNumber, IEnumerable<LineItem> items)
@@ -25,7 +25,7 @@ namespace AdvancedCQRS.DocumentMessaging
                 order.AddItem(item);
             }
 
-            _orderHandler.Handle(order.InnerItem);
+            _publisher.Publish("OrderPlaced", order.InnerItem);
 
             return order.Id;
         }
