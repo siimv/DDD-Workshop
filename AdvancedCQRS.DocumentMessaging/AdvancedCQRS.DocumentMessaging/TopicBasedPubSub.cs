@@ -61,7 +61,8 @@ namespace AdvancedCQRS.DocumentMessaging
             {
                 foreach (var handler in _subscriptions[topic].OfType<IHandleOrder<T>>())
                 {
-                    handler.Handle(message);
+                    var localHandle = handler;
+                    localHandle.Handle(message);
                 }
             }
         }
