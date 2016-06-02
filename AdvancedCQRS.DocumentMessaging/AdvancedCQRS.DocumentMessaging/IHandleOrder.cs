@@ -1,9 +1,8 @@
-using Newtonsoft.Json.Linq;
-
 namespace AdvancedCQRS.DocumentMessaging
 {
-    public interface IHandleOrder
+    public interface IHandleOrder<in T>
+        where T : IMessage
     {
-        void Handle(JObject order);
+        void Handle(T order);
     }
 }

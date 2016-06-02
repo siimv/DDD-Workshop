@@ -1,16 +1,23 @@
 using System.Collections.Concurrent;
 using System.Threading;
-using Newtonsoft.Json.Linq;
 
 namespace AdvancedCQRS.DocumentMessaging
 {
-    public class QueuedHandler : IHandleOrder, IStartable
+    public class QueuedHandler
+    {
+        public static QueuedHandler<T> Create<T>(IHandleOrder<T> handler, string name) where T : IMessage
+        {
+            return new QueuedHandler<T>(name, handler);
+        }
+    }
+
+    public class QueuedHandler<T> : IHandleOrder<T>, IStartable, IQueue where T : IMessage
     {
         private readonly string _name;
-        private readonly IHandleOrder _handler;
-        private readonly ConcurrentQueue<JObject> _messages = new ConcurrentQueue<JObject>();
+        private readonly IHandleOrder<T> _handler;
+        private readonly ConcurrentQueue<T> _messages = new ConcurrentQueue<T>();
 
-        public QueuedHandler(string name, IHandleOrder handler)
+        public QueuedHandler(string name, IHandleOrder<T> handler)
         {
             _name = name;
             _handler = handler;
@@ -29,7 +36,7 @@ namespace AdvancedCQRS.DocumentMessaging
         {
             while (true)
             {
-                JObject message;
+                T message;
                 if (_messages.TryDequeue(out message))
                 {
                     _handler.Handle(message);
@@ -41,7 +48,7 @@ namespace AdvancedCQRS.DocumentMessaging
             }
         }
 
-        public void Handle(JObject order)
+        public void Handle(T order)
         {
             _messages.Enqueue(order);
         }

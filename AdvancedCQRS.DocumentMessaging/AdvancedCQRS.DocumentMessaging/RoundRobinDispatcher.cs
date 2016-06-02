@@ -1,19 +1,17 @@
-using System;
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
 
 namespace AdvancedCQRS.DocumentMessaging
 {
-    public class RoundRobinDispatcher : IHandleOrder
+    public class RoundRobinDispatcher<T> : IHandleOrder<T> where T : IMessage
     {
-        private readonly Queue<IHandleOrder> _handlers;
+        private readonly Queue<IHandleOrder<T>> _handlers;
 
-        public RoundRobinDispatcher(params IHandleOrder[] handlers)
+        public RoundRobinDispatcher(params IHandleOrder<T>[] handlers)
         {
-            _handlers = new Queue<IHandleOrder>(handlers);
+            _handlers = new Queue<IHandleOrder<T>>(handlers);
         }
 
-        public void Handle(JObject order)
+        public void Handle(T order)
         {
             var handler = _handlers.Dequeue();
 

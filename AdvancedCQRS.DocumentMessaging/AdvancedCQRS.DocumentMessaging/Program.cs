@@ -15,38 +15,43 @@ namespace AdvancedCQRS.DocumentMessaging
 
             var waiter = new Waiter(pubsub);
 
-            var cook1 = new QueuedHandler("Cook #1", new Cook("Tom", pubsub, Random.Next(0, 1000)));
-            var cook2 = new QueuedHandler("Cook #2", new Cook("Jones", pubsub, Random.Next(0, 1000)));
-            var cook3 = new QueuedHandler("Cook #3", new Cook("Huck", pubsub, Random.Next(0, 1000)));
-            var kitchen = new QueuedHandler("Cooks line", new MoreFareDispatcher(cook1, cook2, cook3));
-            pubsub.Subscribe("OrderPlaced", kitchen);
+            var cook1 = QueuedHandler.Create(new Cook("Tom", pubsub, Random.Next(0, 1000)), "Cook #1");
+            var cook2 = QueuedHandler.Create(new Cook("Jones", pubsub, Random.Next(0, 1000)), "Cook #2");
+            var cook3 = QueuedHandler.Create(new Cook("Huck", pubsub, Random.Next(0, 1000)), "Cook #3");
+            var kitchen = QueuedHandler.Create(MoreFareDispatcher.Create(cook1, cook2, cook3), "Kitchen");
+            pubsub.Subscribe(kitchen);
 
-            var manager = new QueuedHandler("Manager #1", new Manager(pubsub));
-            pubsub.Subscribe("OrderCooked", manager);
+            var manager = QueuedHandler.Create(new Manager(pubsub), "Manager #1");
+            pubsub.Subscribe(manager);
 
-            var cashier = new QueuedHandler("Cashier #1", new Cashier(pubsub));
-            pubsub.Subscribe("TotalCalculated", cashier);
+            var cashier = QueuedHandler.Create(new Cashier(pubsub), "Cashier #1");
+            pubsub.Subscribe(cashier);
 
             //var handler = new PrintingOrderHandler();
             var handler = new NullHandler();
-            pubsub.Subscribe("OrderPaid", handler);
+            pubsub.Subscribe(handler);
 
-            var startables = new []{ kitchen, cook1, cook2, cook3, cashier, manager };
+            var startables = new IStartable[]{ kitchen, cook1, cook2, cook3, cashier, manager };
+            var queues = new IQueue[]{ kitchen, cook1, cook2, cook3, cashier, manager };
 
             foreach (var startable in startables)
             {
                 startable.Start();
             }
 
-            StartMonitoring(startables);
+            StartMonitoring(queues);
+            TakeOrders(waiter);
+        }
 
+        private static void TakeOrders(Waiter waiter)
+        {
             for (int i = 1; i < 300; i++)
             {
                 waiter.TakeOrder(i, CreateOrder());
             }
         }
 
-        private static void StartMonitoring(IList<QueuedHandler> handlers)
+        private static void StartMonitoring(IList<IQueue> handlers)
         {
             new Thread(() =>
             {

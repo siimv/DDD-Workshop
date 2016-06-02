@@ -1,17 +1,15 @@
-using Newtonsoft.Json.Linq;
-
 namespace AdvancedCQRS.DocumentMessaging
 {
-    public class HandlerMultiplexer : IHandleOrder
+    public class HandlerMultiplexer<T> : IHandleOrder<T> where T : IMessage
     {
-        private readonly IHandleOrder[] _handlers;
+        private readonly IHandleOrder<T>[] _handlers;
 
-        public HandlerMultiplexer(params IHandleOrder[] handlers)
+        public HandlerMultiplexer(params IHandleOrder<T>[] handlers)
         {
             _handlers = handlers;
         }
 
-        public void Handle(JObject order)
+        public void Handle(T order)
         {
             foreach (var handler in _handlers)
             {

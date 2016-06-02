@@ -25,7 +25,7 @@ namespace AdvancedCQRS.DocumentMessaging
                 order.AddItem(item);
             }
 
-            _publisher.Publish("OrderPlaced", order.InnerItem);
+            _publisher.Publish(new OrderPlaced { Order = order.InnerItem });
 
             return order.Id;
         }

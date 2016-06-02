@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace AdvancedCQRS.DocumentMessaging
 {
-    public class Cook : IHandleOrder
+    public class Cook : IHandleOrder<OrderPlaced>
     {
         private readonly string _name;
         private readonly IPublisher _publisher;
@@ -27,9 +27,9 @@ namespace AdvancedCQRS.DocumentMessaging
             {"random3", "secret" },
         };
 
-        public void Handle(JObject baseOrder)
+        public void Handle(OrderPlaced baseOrder)
         {
-            var order = new CooksOrder(baseOrder);
+            var order = new CooksOrder(baseOrder.Order);
             
             Thread.Sleep(_cookingTime);
 
@@ -37,7 +37,7 @@ namespace AdvancedCQRS.DocumentMessaging
             order.CookedAt = DateTime.Now;
             order.CookedBy = _name;
 
-            _publisher.Publish("OrderCooked", order.InnerItem);
+            _publisher.Publish(new OrderCooked { Order = order.InnerItem });
         }
 
         private string FindIngredients(LineItem item)

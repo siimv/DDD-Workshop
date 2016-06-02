@@ -1,19 +1,26 @@
 using System.Linq;
 using System.Threading;
-using Newtonsoft.Json.Linq;
 
 namespace AdvancedCQRS.DocumentMessaging
 {
-    public class MoreFareDispatcher : IHandleOrder
+    public class MoreFareDispatcher
     {
-        private readonly QueuedHandler[] _handlers;
+        public static MoreFareDispatcher<T> Create<T>(params QueuedHandler<T>[] handlers) where T : IMessage
+        {
+            return new MoreFareDispatcher<T>(handlers);
+        }
+    }
 
-        public MoreFareDispatcher(params QueuedHandler[] handlers)
+    public class MoreFareDispatcher<T> : IHandleOrder<T> where T : IMessage
+    {
+        private readonly QueuedHandler<T>[] _handlers;
+
+        public MoreFareDispatcher(params QueuedHandler<T>[] handlers)
         {
             _handlers = handlers;
         }
 
-        public void Handle(JObject order)
+        public void Handle(T order)
         {
             while (true)
             {

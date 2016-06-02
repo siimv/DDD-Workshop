@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 
 namespace AdvancedCQRS.DocumentMessaging
 {
-    public class Manager : IHandleOrder
+    public class Manager : IHandleOrder<OrderCooked>
     {
         private readonly IPublisher _publisher;
 
@@ -13,9 +13,9 @@ namespace AdvancedCQRS.DocumentMessaging
             _publisher = publisher;
         }
 
-        public void Handle(JObject baseOrder)
+        public void Handle(OrderCooked baseOrder)
         {
-            var order = new ManagersOrder(baseOrder);
+            var order = new ManagersOrder(baseOrder.Order);
 
             var totalWithoutTax = order.Items.Sum(item => item.Quantity * item.Price);
             var tax = (int)(totalWithoutTax * 0.2);
@@ -23,7 +23,7 @@ namespace AdvancedCQRS.DocumentMessaging
             order.Tax = tax;
             order.Total = totalWithoutTax + tax;
 
-            _publisher.Publish("TotalCalculated", order.InnerItem);
+            _publisher.Publish(new OrderPriced { Order = order.InnerItem });
         }
     }
 

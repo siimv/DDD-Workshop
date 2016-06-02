@@ -1,10 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
-
-namespace AdvancedCQRS.DocumentMessaging
+﻿namespace AdvancedCQRS.DocumentMessaging
 {
-    public class NullHandler : IHandleOrder
+    public class NullHandler : IHandleOrder<OrderPaid>
     {
-        public void Handle(JObject order)
+        public void Handle(OrderPaid order)
         {
         }
     }

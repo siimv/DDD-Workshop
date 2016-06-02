@@ -1,11 +1,10 @@
 ﻿using System;
-using Newtonsoft.Json.Linq;
 
 namespace AdvancedCQRS.DocumentMessaging
 {
-    public class PrintingOrderHandler : IHandleOrder
+    public class PrintingOrderHandler : IHandleOrder<OrderPaid>
     {
-        public void Handle(JObject order)
+        public void Handle(OrderPaid order)
         {
             Console.WriteLine(order);
         }

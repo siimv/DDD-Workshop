@@ -55,11 +55,17 @@
     <Compile Include="CooksOrder.cs" />
     <Compile Include="HandlerMultiplexer.cs" />
     <Compile Include="IHandleOrder.cs" />
+    <Compile Include="IQueue.cs" />
     <Compile Include="IStartable.cs" />
     <Compile Include="LineItem.cs" />
     <Compile Include="ManagersOrder.cs" />
+    <Compile Include="MessageBase.cs" />
     <Compile Include="MoreFareDispatcher.cs" />
     <Compile Include="NullHandler.cs" />
+    <Compile Include="OrderCooked.cs" />
+    <Compile Include="OrderPaid.cs" />
+    <Compile Include="OrderPlaced.cs" />
+    <Compile Include="OrderPriced.cs" />
     <Compile Include="PrintingOrderHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

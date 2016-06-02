@@ -2,7 +2,7 @@ using Newtonsoft.Json.Linq;
 
 namespace AdvancedCQRS.DocumentMessaging
 {
-    public class Cashier : IHandleOrder
+    public class Cashier : IHandleOrder<OrderPriced>
     {
         private readonly IPublisher _publisher;
 
@@ -11,12 +11,12 @@ namespace AdvancedCQRS.DocumentMessaging
             _publisher = publisher;
         }
 
-        public void Handle(JObject baseOrder)
+        public void Handle(OrderPriced baseOrder)
         {
-            var order = new CashiersOrder(baseOrder);
+            var order = new CashiersOrder(baseOrder.Order);
             order.IsPaid = true;
 
-            _publisher.Publish("OrderPaid", order.InnerItem);
+            _publisher.Publish(new OrderPaid { Order = order.InnerItem });
         }
     }
 
