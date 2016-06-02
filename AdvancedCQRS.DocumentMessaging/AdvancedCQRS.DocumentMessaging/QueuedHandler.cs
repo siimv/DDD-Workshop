@@ -7,13 +7,19 @@ namespace AdvancedCQRS.DocumentMessaging
 {
     public class QueuedHandler : IHandleOrder, IStartable
     {
+        private readonly string _name;
         private readonly IHandleOrder _handler;
         private readonly ConcurrentQueue<JObject> _messages = new ConcurrentQueue<JObject>();
 
-        public QueuedHandler(IHandleOrder handler)
+        public QueuedHandler(string name, IHandleOrder handler)
         {
+            _name = name;
             _handler = handler;
         }
+
+        public string Name => _name;
+
+        public int NumberOfMessages => _messages.Count;
 
         public void Start()
         {

@@ -8,11 +8,15 @@ namespace AdvancedCQRS.DocumentMessaging
 {
     public class Cook : IHandleOrder
     {
+        private readonly string _name;
         private readonly IHandleOrder _orderHandler;
+        private readonly int _cookingTime;
 
-        public Cook(IHandleOrder orderHandler)
+        public Cook(string name, IHandleOrder orderHandler, int cookingTime)
         {
+            _name = name;
             _orderHandler = orderHandler;
+            _cookingTime = cookingTime;
         }
 
         private readonly Dictionary<string, string> _ingredientsMap = new Dictionary<string, string>
@@ -26,12 +30,12 @@ namespace AdvancedCQRS.DocumentMessaging
         public void Handle(JObject baseOrder)
         {
             var order = new CooksOrder(baseOrder);
-
-            var timeToCook = TimeToCook(string.Join(" ", order.Items.Select(x => x.Item)));
-            Thread.Sleep(timeToCook);
+            
+            Thread.Sleep(_cookingTime);
 
             order.Ingredients = string.Join(", ", order.Items.Select(FindIngredients));
             order.CookedAt = DateTime.Now;
+            order.CookedBy = _name;
 
             _orderHandler.Handle(order.InnerItem);
         }
@@ -44,13 +48,6 @@ namespace AdvancedCQRS.DocumentMessaging
             }
             
             return _ingredientsMap[$"random{new Random().Next(1, 3)}"];
-        }
-
-        private int TimeToCook(string order)
-        {
-            if (order.Contains("burger")) return 3000;
-            if (order.Contains("pancake")) return 1000;
-            return 2000;
         }
     }
 
@@ -79,6 +76,11 @@ namespace AdvancedCQRS.DocumentMessaging
         public DateTime CookedAt
         {
             set { _order["CookedAt"] = value; }
+        }
+
+        public string CookedBy
+        {
+            set { _order["CookedBy"] = value; }
         }
 
         public string Ingredients
