@@ -6,7 +6,7 @@ namespace AdvancedCQRS.DocumentMessaging
     {
         public void Handle(OrderPaid order)
         {
-            Console.WriteLine(order);
+            Console.WriteLine(order.Order);
         }
     }
 }
