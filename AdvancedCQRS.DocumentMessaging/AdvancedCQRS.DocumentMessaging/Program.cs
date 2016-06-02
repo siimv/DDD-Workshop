@@ -7,15 +7,24 @@ namespace AdvancedCQRS.DocumentMessaging
     {
         public static void Main()
         {
-            var cashier = new Cashier(new PrintingOrderHandler());
-            var manager = new Manager(cashier);
-            var cook = new Cook(manager);
-            var waiter = new Waiter(cook);
+            var cashier = new QueuedHandler(new Cashier(new PrintingOrderHandler()));
+            var manager = new QueuedHandler(new Manager(cashier));
+            var cook1 = new QueuedHandler(new Cook(manager));
+            var cook2 = new QueuedHandler(new Cook(manager));
+            var cook3 = new QueuedHandler(new Cook(manager));
+            var cooks = new RoundRobinDispatcher(cook1, cook2, cook3);
+            var waiter = new Waiter(cooks);
 
             for (int i = 1; i < 11; i++)
             {
                 waiter.TakeOrder(i, CreateOrder());
             }
+
+            cashier.Start();
+            manager.Start();
+            cook1.Start();
+            cook2.Start();
+            cook3.Start();
         }
 
         private static IEnumerable<LineItem> CreateOrder()

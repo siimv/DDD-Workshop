@@ -53,12 +53,16 @@
   <ItemGroup>
     <Compile Include="CashiersOrder.cs" />
     <Compile Include="CooksOrder.cs" />
+    <Compile Include="HandlerMultiplexer.cs" />
     <Compile Include="IHandleOrder.cs" />
+    <Compile Include="IStartable.cs" />
     <Compile Include="LineItem.cs" />
     <Compile Include="ManagersOrder.cs" />
     <Compile Include="PrintingOrderHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QueuedHandler.cs" />
+    <Compile Include="RoundRobinDispatcher.cs" />
     <Compile Include="Tests\WaitersOrderTests.cs" />
     <Compile Include="WaitersOrder.cs" />
   </ItemGroup>
