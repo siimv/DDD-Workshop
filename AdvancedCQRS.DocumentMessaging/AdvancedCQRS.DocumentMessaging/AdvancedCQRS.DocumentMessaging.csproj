@@ -58,6 +58,7 @@
     <Compile Include="IStartable.cs" />
     <Compile Include="LineItem.cs" />
     <Compile Include="ManagersOrder.cs" />
+    <Compile Include="MoreFareDispatcher.cs" />
     <Compile Include="NullHandler.cs" />
     <Compile Include="PrintingOrderHandler.cs" />
     <Compile Include="Program.cs" />

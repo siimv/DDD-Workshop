@@ -19,10 +19,11 @@ namespace AdvancedCQRS.DocumentMessaging
             var cook1 = new QueuedHandler("Cook #1", new Cook("Tom", manager, Random.Next(0, 1000)));
             var cook2 = new QueuedHandler("Cook #2", new Cook("Jones", manager, Random.Next(0, 1000)));
             var cook3 = new QueuedHandler("Cook #3", new Cook("Huck", manager, Random.Next(0, 1000)));
-            var cooks = new RoundRobinDispatcher(cook1, cook2, cook3);
+            //var cooks = new RoundRobinDispatcher(cook1, cook2, cook3);
+            var cooks = new QueuedHandler("Cooks line", new MoreFareDispatcher(cook1, cook2, cook3));
             var waiter = new Waiter(cooks);
 
-            var startables = new []{ cashier, manager, cook1, cook2, cook3 };
+            var startables = new []{ cooks, cook1, cook2, cook3, cashier, manager };
 
             foreach (var startable in startables)
             {
