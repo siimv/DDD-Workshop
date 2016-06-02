@@ -61,6 +61,7 @@
     <Compile Include="ManagersOrder.cs" />
     <Compile Include="MessageBase.cs" />
     <Compile Include="MoreFareDispatcher.cs" />
+    <Compile Include="NarrowingHandler.cs" />
     <Compile Include="OrderCooked.cs" />
     <Compile Include="OrderPaid.cs" />
     <Compile Include="OrderPlaced.cs" />

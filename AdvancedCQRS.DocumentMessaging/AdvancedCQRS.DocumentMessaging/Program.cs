@@ -27,7 +27,7 @@ namespace AdvancedCQRS.DocumentMessaging
             var cashier = QueuedHandler.Create(new Cashier(pubsub), "Cashier #1");
             pubsub.Subscribe(cashier);
 
-            pubsub.Subscribe(new PrintingOrderHandler());
+            //pubsub.Subscribe(new PrintingOrderHandler());
 
             var startables = new IStartable[]{ kitchen, cook1, cook2, cook3, cashier, manager };
             var queues = new IQueue[]{ kitchen, cook1, cook2, cook3, cashier, manager };
