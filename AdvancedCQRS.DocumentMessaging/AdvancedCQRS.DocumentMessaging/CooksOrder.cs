@@ -37,7 +37,9 @@ namespace AdvancedCQRS.DocumentMessaging
             order.CookedAt = DateTime.Now;
             order.CookedBy = _name;
 
-            _publisher.Publish(new OrderCooked { Order = order.InnerItem });
+            var orderCooked = new OrderCooked { Order = order.InnerItem };
+            orderCooked.ReplyTo(baseOrder);
+            _publisher.Publish(orderCooked);
         }
 
         private string FindIngredients(LineItem item)

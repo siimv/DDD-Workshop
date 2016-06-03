@@ -57,13 +57,19 @@ namespace AdvancedCQRS.DocumentMessaging
         public void Publish<T>(T message) where T : IMessage
         {
             var topic = GetTopic<T>();
-            if (_subscriptions.ContainsKey(topic))
+
+            Publish(topic, message);
+            Publish(message.CorrelationId.ToString(), message);
+        }
+
+        private void Publish<T>(string topic, T message) where T : IMessage
+        {
+            if (!_subscriptions.ContainsKey(topic)) return;
+
+            foreach (var handler in _subscriptions[topic].OfType<IHandleOrder<T>>())
             {
-                foreach (var handler in _subscriptions[topic].OfType<IHandleOrder<T>>())
-                {
-                    var localHandle = handler;
-                    localHandle.Handle(message);
-                }
+                var localHandle = handler;
+                localHandle.Handle(message);
             }
         }
 
