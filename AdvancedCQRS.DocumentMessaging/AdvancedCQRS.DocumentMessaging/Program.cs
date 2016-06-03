@@ -18,7 +18,7 @@ namespace AdvancedCQRS.DocumentMessaging
             var cook1 = QueuedHandler.Create(new Cook("Tom", pubsub, Random.Next(0, 1000)), "Cook #1");
             var cook2 = QueuedHandler.Create(new Cook("Jones", pubsub, Random.Next(0, 1000)), "Cook #2");
             var cook3 = QueuedHandler.Create(new Cook("Huck", pubsub, Random.Next(0, 1000)), "Cook #3");
-            var kitchen = QueuedHandler.Create(MoreFareDispatcher.Create(cook1, cook2, cook3), "Kitchen");
+            var kitchen = QueuedHandler.Create(MoreFareDispatcher.Create(cook1, cook2, cook3).WrapWithDropper(), "Kitchen");
             pubsub.SubscribeByMessage(kitchen);
 
             var manager = QueuedHandler.Create(new Manager(pubsub), "Manager #1");
@@ -32,6 +32,9 @@ namespace AdvancedCQRS.DocumentMessaging
 
             var printer = new PrintingOrderHandler();
             //pubsub.SubscribeByMessage<OrderPaid>(printer);
+            //pubsub.SubscribeByMessage<OrderCooked>(printer);
+            //pubsub.SubscribeByMessage<OrderPlaced>(printer);
+            //pubsub.SubscribeByMessage<OrderPriced>(printer);
 
             var startables = new IStartable[]{ midgetHouse, kitchen, cook1, cook2, cook3, cashier, manager };
             var queues = new IQueue[]{ midgetHouse, kitchen, cook1, cook2, cook3, cashier, manager };
