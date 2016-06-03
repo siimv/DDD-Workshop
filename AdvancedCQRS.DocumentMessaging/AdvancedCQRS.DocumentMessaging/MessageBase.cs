@@ -6,7 +6,7 @@ namespace AdvancedCQRS.DocumentMessaging
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        public Guid CorrelationId { get; set; }
+        public string CorrelationId { get; set; }
 
         public Guid CausationId { get; set; }
 
@@ -23,7 +23,7 @@ namespace AdvancedCQRS.DocumentMessaging
     {
         Guid Id { get; }
 
-        Guid CorrelationId { get; }
+        string CorrelationId { get; }
 
         Guid CausationId { get; }
     }

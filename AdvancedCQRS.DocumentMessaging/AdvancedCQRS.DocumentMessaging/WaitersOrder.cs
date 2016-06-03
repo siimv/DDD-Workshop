@@ -25,7 +25,9 @@ namespace AdvancedCQRS.DocumentMessaging
                 order.AddItem(item);
             }
 
-            _publisher.Publish(new OrderPlaced { Order = order.InnerItem });
+            var orderPlaced = new OrderPlaced { Order = order.InnerItem };
+            orderPlaced.CorrelationId = orderPlaced.Id.ToString();
+            _publisher.Publish(orderPlaced);
 
             return order.Id;
         }

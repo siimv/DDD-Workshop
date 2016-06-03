@@ -8,17 +8,24 @@ namespace AdvancedCQRS.DocumentMessaging
         private object _lock = new object();
         private readonly Dictionary<string, List<object>> _subscriptions = new Dictionary<string, List<object>>();
         
-        public void Subscribe<T>(IHandleOrder<T> handler) where T : IMessage
+        public void SubscribeByMessage<T>(IHandleOrder<T> handler) where T : IMessage
         {
             var topic = GetTopic<T>();
             Subscribe(topic, handler);
         }
 
-        public void Subscribe<T>(string topic, IHandleOrder<T> handler) where T : IMessage
+        public void SubscribeByCorrelationId<T>(string correlationId, IHandleOrder<T> handler) where T : IMessage
+        {
+            Subscribe(correlationId, handler);
+        }
+
+        private void Subscribe<T>(string topic, IHandleOrder<T> handler) where T : IMessage
         {
             lock (_lock)
             {
                 var subscriptions = CopySubscribers(topic);
+                if (subscriptions.Contains(handler)) return;
+
                 subscriptions.Add(handler);
 
                 ReplaceSubscribers(topic, subscriptions);
@@ -59,7 +66,7 @@ namespace AdvancedCQRS.DocumentMessaging
             var topic = GetTopic<T>();
 
             Publish(topic, message);
-            Publish(message.CorrelationId.ToString(), message);
+            Publish(message.CorrelationId, message);
         }
 
         private void Publish<T>(string topic, T message) where T : IMessage
