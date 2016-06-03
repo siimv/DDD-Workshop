@@ -13,6 +13,8 @@ namespace AdvancedCQRS.DocumentMessaging
         {
             var pubsub = new TopicBasedPubSub();
 
+            var alarmClock = new AlarmClock<RetryCooking>(pubsub);
+            pubsub.SubscribeByMessage(alarmClock);
             var waiter = new Waiter(pubsub);
 
             var cook1 = QueuedHandler.Create(new Cook("Tom", pubsub, Random.Next(0, 1000)), "Cook #1");
@@ -36,7 +38,7 @@ namespace AdvancedCQRS.DocumentMessaging
             //pubsub.SubscribeByMessage<OrderPlaced>(printer);
             //pubsub.SubscribeByMessage<OrderPriced>(printer);
 
-            var startables = new IStartable[]{ midgetHouse, kitchen, cook1, cook2, cook3, cashier, manager };
+            var startables = new IStartable[]{ midgetHouse, kitchen, cook1, cook2, cook3, cashier, manager, alarmClock };
             var queues = new IQueue[]{ midgetHouse, kitchen, cook1, cook2, cook3, cashier, manager };
 
             foreach (var startable in startables)

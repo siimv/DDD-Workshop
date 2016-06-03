@@ -13,7 +13,7 @@ namespace AdvancedCQRS.DocumentMessaging
     public class DroppingHandler<T> : IHandleOrder<T> where T : IMessage
     {
         private readonly IHandleOrder<T> _handler;
-        private Random _random = new Random();
+        private readonly Random _random = new Random();
 
         public DroppingHandler(IHandleOrder<T> handler)
         {

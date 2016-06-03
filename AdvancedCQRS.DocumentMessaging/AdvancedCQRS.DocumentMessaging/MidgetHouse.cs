@@ -18,6 +18,7 @@ namespace AdvancedCQRS.DocumentMessaging
             _pubsub.SubscribeByCorrelationId<OrderCooked>(order.CorrelationId, midget);
             _pubsub.SubscribeByCorrelationId<OrderPriced>(order.CorrelationId, midget);
             _pubsub.SubscribeByCorrelationId<OrderPaid>(order.CorrelationId, midget);
+            _pubsub.SubscribeByCorrelationId<RetryCooking>(order.CorrelationId, midget);
 
             midget.Handle(order);
         }
@@ -29,6 +30,7 @@ namespace AdvancedCQRS.DocumentMessaging
             _pubsub.Unsubscribe<OrderCooked>(midget.CorrelationId, midget);
             _pubsub.Unsubscribe<OrderPriced>(midget.CorrelationId, midget);
             _pubsub.Unsubscribe<OrderPaid>(midget.CorrelationId, midget);
+            _pubsub.Unsubscribe<RetryCooking>(midget.CorrelationId, midget);
 
             _midgets.Remove(midget.CorrelationId);
         }

@@ -12,6 +12,8 @@ namespace AdvancedCQRS.DocumentMessaging
             _publisher = publisher;
         }
 
+        public string CorrelationId { get; }
+
         public void Handle(OrderPlaced order)
         {
             var message = new PriceOrder { Order = order.Order };
@@ -41,6 +43,8 @@ namespace AdvancedCQRS.DocumentMessaging
             _publisher.Publish(message);
         }
 
-        public string CorrelationId { get; }
+        public void Handle(RetryCooking order)
+        {
+        }
     }
 }
