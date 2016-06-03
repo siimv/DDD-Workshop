@@ -56,6 +56,7 @@
     <Compile Include="CooksOrder.cs" />
     <Compile Include="HandlerMultiplexer.cs" />
     <Compile Include="IHandleOrder.cs" />
+    <Compile Include="IMidget.cs" />
     <Compile Include="IQueue.cs" />
     <Compile Include="IStartable.cs" />
     <Compile Include="LineItem.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="Tests\WaitersOrderTests.cs" />
     <Compile Include="TopicBasedPubSub.cs" />
     <Compile Include="WaitersOrder.cs" />
+    <Compile Include="ZimbabweMidget.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

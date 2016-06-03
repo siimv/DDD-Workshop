@@ -4,7 +4,7 @@ namespace AdvancedCQRS.DocumentMessaging
 {
     public class MidgetHouse : IHandleOrder<OrderPlaced>
     {
-        private readonly Dictionary<string, Midget> _midgets = new Dictionary<string, Midget>();
+        private readonly Dictionary<string, IMidget> _midgets = new Dictionary<string, IMidget>();
         private readonly TopicBasedPubSub _pubsub;
 
         public MidgetHouse(TopicBasedPubSub pubsub)
@@ -22,7 +22,7 @@ namespace AdvancedCQRS.DocumentMessaging
             midget.Handle(order);
         }
 
-        public void KillMidget(Midget midget)
+        public void KillMidget(IMidget midget)
         {
             if (midget == null || !_midgets.ContainsKey(midget.CorrelationId)) return;
             
@@ -33,14 +33,23 @@ namespace AdvancedCQRS.DocumentMessaging
             _midgets.Remove(midget.CorrelationId);
         }
 
-        private Midget GetMidget(IMessage message)
+        private IMidget GetMidget(OrderPlaced message)
         {
             if (!_midgets.ContainsKey(message.CorrelationId))
             {
-                _midgets[message.CorrelationId] = new Midget(message.CorrelationId, this, _pubsub);
+                _midgets[message.CorrelationId] = CreateMidget(message);
             }
 
             return _midgets[message.CorrelationId];
+        }
+
+        private IMidget CreateMidget(OrderPlaced message)
+        {
+            if ((bool)message.Order["IsDodgy"])
+            {
+                return new ZimbabweMidget(message.CorrelationId, this, _pubsub);
+            }
+            return new Midget(message.CorrelationId, this, _pubsub);
         }
     }
 }

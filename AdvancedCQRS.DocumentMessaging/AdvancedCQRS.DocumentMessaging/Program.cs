@@ -31,7 +31,7 @@ namespace AdvancedCQRS.DocumentMessaging
             pubsub.SubscribeByMessage(midgetHouse);
 
             var printer = new PrintingOrderHandler();
-            pubsub.SubscribeByMessage<OrderPaid>(printer);
+            //pubsub.SubscribeByMessage<OrderPaid>(printer);
 
             var startables = new IStartable[]{ midgetHouse, kitchen, cook1, cook2, cook3, cashier, manager };
             var queues = new IQueue[]{ midgetHouse, kitchen, cook1, cook2, cook3, cashier, manager };
@@ -49,7 +49,8 @@ namespace AdvancedCQRS.DocumentMessaging
         {
             for (int i = 1; i < 300; i++)
             {
-                waiter.TakeOrder(i, CreateOrder());
+                var isDodgy = i % 5 == 0;
+                waiter.TakeOrder(i, CreateOrder(), isDodgy);
             }
         }
 

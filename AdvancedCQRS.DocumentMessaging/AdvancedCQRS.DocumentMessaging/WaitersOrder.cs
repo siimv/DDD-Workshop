@@ -13,7 +13,7 @@ namespace AdvancedCQRS.DocumentMessaging
             _publisher = publisher;
         }
 
-        public Guid TakeOrder(int tableNumber, IEnumerable<LineItem> items)
+        public Guid TakeOrder(int tableNumber, IEnumerable<LineItem> items, bool isDodgy)
         {
             var order = new WaitersOrder(new JObject());
             order.Id = Guid.NewGuid();
@@ -27,6 +27,7 @@ namespace AdvancedCQRS.DocumentMessaging
 
             var orderPlaced = new OrderPlaced { Order = order.InnerItem };
             orderPlaced.CorrelationId = orderPlaced.Id.ToString();
+            orderPlaced.Order["IsDodgy"] = isDodgy;
             _publisher.Publish(orderPlaced);
 
             return order.Id;
